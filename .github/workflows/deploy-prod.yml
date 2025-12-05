@@ -1,4 +1,4 @@
-name: Deploy to VPS
+name: Deploy to VPS (Production)
 
 on:
   push:
@@ -18,11 +18,10 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          source: "./"        # Копировать ВСЁ
+          source: "./"
           target: "~/apps/fishies"
-          tar_tmp_path: "."   # важно чтобы не было ошибки "empty archive"
 
-      - name: Execute deploy commands
+      - name: Install dependencies & build
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -32,9 +31,10 @@ jobs:
             cd ~/apps/fishies/frontend
             npm install
             npm run build
-            pm2 restart fishies-frontend || pm2 start "npm -- start" --name fishies-frontend
 
             cd ~/apps/fishies/backend
             npm install
-            npx prisma migrate deploy
-            pm2 restart fishies-backend || pm2 start "npm run start:prod" --name fishies-backend
+            npm run build
+
+            cd ~/apps/fishies
+            pm2 reload ecosystem.config.js --only fishies-frontend,fishies-backend

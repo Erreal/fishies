@@ -39,15 +39,9 @@ jobs:
             rm -rf dist
             npm install
             npm run build
-            
-            # Рестарт всех процессов
-            cd ~/apps/fishies
-            pm2 delete all
-            pm2 start ecosystem.config.js
-            pm2 save
-            
-            # Проверка
-            sleep 5
+            pm2 reload ecosystem.config.js --only fishies-backend,fishies-frontend
+      
+            # Проверяем
+            sleep 3
             pm2 status
-            echo "Проверка портов:"
-            sudo lsof -i -P -n | grep -E '3000|3010|4000|4010' || echo "Порты еще не подняты"
+            echo "Deployment completed successfully!"

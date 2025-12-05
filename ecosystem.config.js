@@ -18,14 +18,14 @@ module.exports = {
     // PRODUCTION FRONTEND
     // =======================
     {
-      name: "fishies-frontend",
-      cwd: "/home/erreal/apps/fishies/frontend",
-      script: ".next/standalone/server.js",
-      env: {
-        NODE_ENV: "production",
-        PORT: 3000,
-      },
-      watch: false,
+        name: "fishies-frontend",
+        cwd: "/home/erreal/apps/fishies/frontend",
+        script: ".next/standalone/server.js",
+        node_args: "--port=3000 --hostname=0.0.0.0",
+        env: {
+            NODE_ENV: "production",
+        },
+        watch: false,
     },
 
     // =======================

@@ -35,6 +35,9 @@ jobs:
             cd ~/apps/fishies/backend
             npm install
             npm run build
-
-            cd ~/apps/fishies
-            pm2 reload ecosystem.config.js --only fishies-frontend,fishies-backend
+            pm2 reload ecosystem.config.js --only fishies-backend,fishies-frontend
+      
+            # Проверяем
+            sleep 3
+            pm2 status
+            echo "Deployment completed successfully!"

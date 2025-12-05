@@ -1,10 +1,12 @@
 import Footer from '@/components/footer/footer';
+import { Header } from '@/components/header/header';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
 
 export default function Home() {
   return (
     <>
+      <Header />
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader>

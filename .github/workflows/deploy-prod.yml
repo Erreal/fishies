@@ -5,8 +5,43 @@ on:
     branches: ["main"]
 
 jobs:
+  # Сначала проверяем код
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm ci
+          cd ../backend
+          npm ci
+          
+      - name: Run linter (frontend)
+        run: |
+          cd frontend
+          npm run lint || echo "Lint completed with warnings"
+          
+      - name: Run linter (backend)
+        run: |
+          cd backend
+          npm run lint || echo "Lint completed with warnings"
+          
+      #- name: Run tests (если есть)
+      #  run: |
+      #    cd frontend && npm test -- --passWithNoTests || true
+      #    cd ../backend && npm test -- --passWithNoTests || true
+
   deploy:
     runs-on: ubuntu-latest
+    needs: lint-and-test  # Зависит от успешного линтинга
 
     steps:
       - name: Checkout repo

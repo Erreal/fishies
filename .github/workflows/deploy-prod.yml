@@ -73,6 +73,7 @@ jobs:
             rm -rf dist
             npm install
             npm run build
+            cd ~/apps/fishies
             pm2 reload ecosystem.config.js --only fishies-backend,fishies-frontend
       
             # Проверяем

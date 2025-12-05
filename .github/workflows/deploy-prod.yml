@@ -21,20 +21,33 @@ jobs:
           source: "./"
           target: "~/apps/fishies"
 
-      - name: Install dependencies & build
+      - name: Deploy and restart
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
+            # Фронтенд
             cd ~/apps/fishies/frontend
+            rm -rf .next node_modules/.cache
             npm install
             npm run build
-
+            
+            # Бэкенд  
             cd ~/apps/fishies/backend
+            rm -rf dist
             npm install
             npm run build
-
+            
+            # Рестарт всех процессов
             cd ~/apps/fishies
-            pm2 reload ecosystem.config.js --only fishies-frontend,fishies-backend
+            pm2 delete all
+            pm2 start ecosystem.config.js
+            pm2 save
+            
+            # Проверка
+            sleep 5
+            pm2 status
+            echo "Проверка портов:"
+            sudo lsof -i -P -n | grep -E '3000|3010|4000|4010' || echo "Порты еще не подняты"
